@@ -6,4 +6,4 @@ export const PLATFORM_NAME = 'Hikvision NVR Events';
 /**
  * This must match the name of your plugin as defined the package.json
  */
-export const PLUGIN_NAME = 'homebridge-hikvision-nvr-events';
+export const PLUGIN_NAME = '@modul8co/homebridge-hikvision-nvr-events';
