@@ -1,15 +1,39 @@
 {
-  "pluginAlias": "ExampleHomebridgePlugin",
+  "pluginAlias": "Hikvision NVR Events",
   "pluginType": "platform",
   "singular": true,
   "schema": {
     "type": "object",
     "properties": {
-      "name": {
-        "title": "Name",
+      "host": {
+        "title": "Host",
         "type": "string",
         "required": true,
-        "default": "Example Dynamic Platform"
+        "default": "192.168.1.100"
+      },
+      "port": {
+        "title": "Port",
+        "type": "number",
+        "required": true,
+        "default": 8080
+      },
+      "username": {
+        "title": "Username",
+        "type": "string",
+        "required": true,
+        "default": "admin"
+      },
+      "password": {
+        "title": "Password",
+        "type": "string",
+        "required": true,
+        "default": "admin"
+      },
+      "motionurl": {
+        "title": "Motion URL",
+        "type": "string",
+        "required": true,
+        "default": "http://localhost:8080/motion"
       }
     }
   }
