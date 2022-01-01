@@ -43,7 +43,7 @@ export class HikvisionNVREventsPlatform {
       this._parser.parseString(result.data.toString(), (err, result)=> {
         result.InputProxyChannelList.InputProxyChannel.forEach((channel) => {
           this._channelNames[channel.id] = channel.name;
-          this.log.debug(`Added camera ${channel.name} on channel ${channel.id}`);
+          this.log.info(`Added camera ${channel.name} on channel ${channel.id}`);
         });
       });
       this._urllib.request(this._eventsUrl, this._streamingOptions, this.responseHandler);
@@ -51,7 +51,7 @@ export class HikvisionNVREventsPlatform {
   }
 
   async motionUpdater(channel: string){
-    this.log.debug('Enabling motion for', channel);
+    this.log.info('Enabling motion for', channel);
     await this._urllib.request(`${this.config.motionurl}?${channel}`).catch((err) => {
       this.log.error('Could not update motion for channel', channel, err);
     });
@@ -62,7 +62,7 @@ export class HikvisionNVREventsPlatform {
       this.log.error('Error:', err);
     }
     if (res !== null) {
-      this.log.debug('Listening for motion events on:', this._eventsUrl);
+      this.log.info('Listening for motion events on:', this._eventsUrl);
       res.on('data', (data) => {
         const channelMatches = data.toString().match(this._channelRegex);
         if (channelMatches !== null) {
