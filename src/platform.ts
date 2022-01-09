@@ -32,22 +32,39 @@ export class HikvisionNVREventsPlatform {
       digestAuth: `${config.username}:${config.password}`,
     };
     this._eventsUrl = `http://${config.host}:${config.port}/ISAPI/Event/notification/alertStream`;
-    this._channelsUrl = `http://${config.host}:${config.port}/ISAPI/ContentMgmt/InputProxy/channels`;
+    log.debug('DVR Mode:', config.dvr);
+    if(config.dvr) {
+      this._channelsUrl = `http://${config.host}:${config.port}/ISAPI/System/Video/inputs/channels`;
+    } else {
+      this._channelsUrl = `http://${config.host}:${config.port}/ISAPI/ContentMgmt/InputProxy/channels`;
+    }
+
     this.api.on('didFinishLaunching', () => {
       this.startListening();
     });
   }
 
   async startListening() {
-    await this._urllib.request(this._channelsUrl, this._requestOptions).then((result) => {
-      this._parser.parseString(result.data.toString(), (err, result)=> {
-        result.InputProxyChannelList.InputProxyChannel.forEach((channel) => {
-          this._channelNames[channel.id] = channel.name;
-          this.log.info(`Added camera ${channel.name} on channel ${channel.id}`);
+    try {
+      await this._urllib.request(this._channelsUrl, this._requestOptions).then((result) => {
+        this._parser.parseString(result.data.toString(), (err, result)=> {
+          if(this.config.dvr) {
+            result.VideoInputChannelList.VideoInputChannel.forEach((channel) => {
+              this._channelNames[channel.id] = channel.name;
+              this.log.info(`Added camera ${channel.name} on channel ${channel.id}`);
+            });
+          } else {
+            result.InputProxyChannelList.InputProxyChannel.forEach((channel) => {
+              this._channelNames[channel.id] = channel.name;
+              this.log.info(`Added camera ${channel.name} on channel ${channel.id}`);
+            });
+          }
         });
+        this._urllib.request(this._eventsUrl, this._streamingOptions, this.responseHandler);
       });
-      this._urllib.request(this._eventsUrl, this._streamingOptions, this.responseHandler);
-    });
+    } catch (e) {
+      this.log.error('Could not load channels', e);
+    }
   }
 
   async motionUpdater(channel: string){

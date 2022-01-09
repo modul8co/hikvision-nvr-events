@@ -2,8 +2,8 @@
   "private": false,
   "displayName": "Hikvision NVR Events",
   "name": "@modul8co/homebridge-hikvision-nvr-events",
-  "version": "1.0.1",
-  "description": "Connects to Hikvision NVR and raises HTTP events when movement is detected",
+  "version": "1.0.2",
+  "description": "Connects to Hikvision NVR or DVR and raises HTTP events when movement is detected",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",

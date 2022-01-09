@@ -5,6 +5,12 @@
   "schema": {
     "type": "object",
     "properties": {
+      "dvr": {
+        "title": "DVR",
+        "type": "boolean",
+        "required": false,
+        "default": false
+      },
       "host": {
         "title": "Host",
         "type": "string",
