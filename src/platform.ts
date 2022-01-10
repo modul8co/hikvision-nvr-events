@@ -68,10 +68,21 @@ export class HikvisionNVREventsPlatform {
   }
 
   async motionUpdater(channel: string){
-    this.log.info('Enabling motion for', channel);
-    await this._urllib.request(`${this.config.motionurl}?${channel}`).catch((err) => {
-      this.log.error('Could not update motion for channel', channel, err);
-    });
+    try {
+      await this._urllib.request(`${this.config.motionurl}?${channel}`).then((res) => {
+        const resultObj = JSON.parse(res.data.toString());
+        if(resultObj.error) {
+          // eslint-disable-next-line max-len
+          this.log.error('Failed to activate motion for', channel, resultObj.message, 'Please ensure that the name of the camera in your device matches the name of the camera in FFMPEG.');
+        } else {
+          this.log.info('Successfully activated motion for', channel, resultObj);
+        }
+      }).catch((e) => {
+        this.log.error('Could not activate motion for channel', channel, e);
+      });
+    } catch (e) {
+      this.log.error('There was a problem activating motion for', channel, e);
+    }
   }
 
   responseHandler = (err, data, res) => {
@@ -86,6 +97,9 @@ export class HikvisionNVREventsPlatform {
           channelMatches.forEach((channelId) => {
             this.motionUpdater(this._channelNames[channelId]);
           });
+        }
+        if (data.includes('videoloss') && data.includes('inactive')) {
+          this.log.debug('Heartbeat received from NVR/DVR');
         }
       });
       res.on('error', (err) => {

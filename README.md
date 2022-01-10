@@ -13,6 +13,8 @@ This plugin allows your Hikvision NVR to raise HTTP events to trigger motion on 
 Simply configure your NVR host, port, username & password, and configure the URL to push motion events to.
 
 homebridge-camera-ffmpeg must be configured to listen on the equivalent port for HTTP requests, the camera names will be automatically detected.
+
+Update: as of version 1.0.2, DVR's are also supported
 ```
 
 
