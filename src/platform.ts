@@ -16,7 +16,8 @@ export class HikvisionNVREventsPlatform {
   private _channelNames = {};
   private _eventsUrl: string;
   private _channelsUrl: string;
-  private _channelRegex = new RegExp('(?<=<dynChannelID>)\\d+');
+  private _dynChannelRegex = new RegExp('(?<=<dynChannelID>)\\d+');
+  private _channelRegex = new RegExp('(?<=<channelID>)\\d+');
 
   constructor(
     public readonly log: Logger,
@@ -92,14 +93,22 @@ export class HikvisionNVREventsPlatform {
     if (res !== null) {
       this.log.info('Listening for motion events on:', this._eventsUrl);
       res.on('data', (data) => {
-        const channelMatches = data.toString().match(this._channelRegex);
-        if (channelMatches !== null) {
-          channelMatches.forEach((channelId) => {
-            this.motionUpdater(this._channelNames[channelId]);
-          });
-        }
         if (data.includes('videoloss') && data.includes('inactive')) {
           this.log.debug('Heartbeat received from NVR/DVR');
+        } else {
+          const dynChannelMatches = data.toString().match(this._dynChannelRegex);
+          if (dynChannelMatches !== null) {
+            dynChannelMatches.forEach((channelId) => {
+              this.motionUpdater(this._channelNames[channelId]);
+            });
+          } else {
+            const channelMatches = data.toString().match(this._channelRegex);
+            if (channelMatches !== null) {
+              channelMatches.forEach((channelId) => {
+                this.motionUpdater(this._channelNames[channelId]);
+              });
+            }
+          }
         }
       });
       res.on('error', (err) => {
