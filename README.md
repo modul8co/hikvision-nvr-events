@@ -6,9 +6,9 @@
 </p>
 
 
-# Homebridge Hikvision NVR Events Plugin
+# Homebridge Hikvision NVR/DVR Events Plugin
 
-This plugin allows your Hikvision NVR to raise HTTP events to trigger motion on homebridge-camera-ffmpeg cameras with motion enabled.
+This plugin allows your Hikvision NVR or DVR to raise HTTP events to trigger motion on homebridge-camera-ffmpeg cameras with motion enabled.
 
 Simply configure your NVR host, port, username & password, and configure the URL to push motion events to.
 
